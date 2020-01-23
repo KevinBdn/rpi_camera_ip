@@ -10,5 +10,5 @@ link_directories(${GTK3_LIBRARY_DIRS})
 add_definitions(${GTK3_CFLAGS_OTHER})
 
 #ajout executable client
-add_executable(main_client ihm.c)
+add_executable(main_client main.c cameraAPI.c)
 target_link_libraries(main_client ${GTK3_LIBRARIES})

@@ -261,6 +261,11 @@ void capture_image(CAMERA* myCam)
         myCam->status = -1;
     }
 
+    if(-1 == xioctl(myCam->fd, VIDIOC_STREAMOFF, &buf.type))
+    {
+        perror("Pb ending Capture");
+        myCam->status = -1;
+    }
     //store data - YUV420
 /*    int outfd = open("out.img", O_WRONLY|O_CREAT);*/
 /*    write(outfd, buffers, buf.bytesused);*/

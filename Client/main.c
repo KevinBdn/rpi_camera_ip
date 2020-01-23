@@ -1,6 +1,6 @@
 /* 
 To compile:
-gcc -g ihm.c -o IHM  `pkg-config --libs --cflags gtk+-3.0 gmodule-2.0`
+gcc -g main.c cameraAPI.c -o client  -ljpeg -pthread `pkg-config --libs --cflags gtk+-3.0 gmodule-2.0`
 
 Official documentation:
 https://developer.gnome.org/gtk3/stable/
@@ -12,19 +12,29 @@ https://developer.gnome.org/gtk3/stable/
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
+#include <pthread.h>
 
-#define OK 1
-#define KO 0
+#include "cameraAPI.h"
+
+#define OK 0
+#define KO -1
 
 #define TAKE 1
 #define SAVE 2
 
 
+CAMERA myCam = {0};
 GtkWidget *main_window = NULL;
 GtkWidget *picture = NULL;  
 
-int status = KO;
-char IP_CAMERA[30]="192.168.0.1";
+
+void sigint_handler(int sig){
+    printf("Signal caught\n");
+    gtk_main_quit();
+    cameraAPI_destroy(&myCam);
+    exit(0);
+}
 
 void format_time(char *output){
     time_t rawtime;
@@ -40,15 +50,15 @@ void format_time(char *output){
 void updateInfo(GtkLabel * InfLabel, int event, char * name)
 {
     char info[1000];
-    char state[80];
+    char state[150];
     char action[256];
     char time[30];
 
     format_time(time);
 
-    switch(status)
+    switch(myCam.status)
     {
-    case OK: sprintf(state," • Camera state: Ready\n\n • IP Address: %s",IP_CAMERA); break;
+    case OK: sprintf(state," • Camera state: Ready\n\n • IP Address: %s",myCam.IPaddress); break;
     case KO: sprintf(state," • Camera state: No connection\n\n • IP Address: No connection"); break;
     }
 
@@ -79,14 +89,15 @@ int open_dialog(char * name_file)
     gint resp = gtk_dialog_run(GTK_DIALOG(dialog));
     if (resp == GTK_RESPONSE_OK)
     {
-        g_print("\tPath: %s\n", gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)));
+/*        g_print("\tPath: %s\n", gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)));*/
         sprintf(name_file,"%s", gtk_file_chooser_get_current_name(GTK_FILE_CHOOSER(dialog)));
+        jpegWrite(myCam.lastImage, gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog)));
         gtk_widget_destroy(dialog);
         return 1;
     }
     else
     {
-        g_print("\tSaving cancel\n");
+/*        g_print("\tSaving cancel\n");*/
         gtk_widget_destroy(dialog);
         return 0;
     }
@@ -94,16 +105,27 @@ int open_dialog(char * name_file)
 
 void takePicture(GtkWidget *widget, gpointer data)
 {
-    printf("\nTake picture\n");
+/*    printf("\nTake picture\n");*/
+    cameraAPI_snapshot(&myCam);
     updateInfo((GtkLabel*) data, TAKE, NULL);
 /*    gtk_image_set_from_file((GtkImage *)picture,"1.png");*/
-/*    gtk_image_new_from_pixbuf ()*/
+    GdkPixbufLoader* loader = gdk_pixbuf_loader_new();
+
+    unsigned char buffer[1000000];
+    jpegWrite(myCam.lastImage, "/tmp/img.jpg");
+    FILE * f = fopen ("/tmp/img.jpg", "r");
+    int length = fread(buffer, 1, sizeof(buffer), f);
+    fclose (f);
+    int a = gdk_pixbuf_loader_write(loader, buffer, length, NULL);
+    GdkPixbuf * pixbuf = gdk_pixbuf_loader_get_pixbuf (loader);
+    gtk_image_set_from_pixbuf((GtkImage *)picture, pixbuf);
+
 }
 
 
 void savePicture(GtkWidget *widget, gpointer data)
 {
-    printf("\nSave picture\n");
+/*    printf("\nSave picture\n");*/
     char name_file[256];
     int success = open_dialog(name_file);
     if (success) updateInfo((GtkLabel*) data, SAVE, name_file);
@@ -112,6 +134,8 @@ void savePicture(GtkWidget *widget, gpointer data)
 void cameraDetection(GtkWidget *widget, gpointer data)
 {
     printf("\nCamera detection started ...\n");
+    pthread_t getIP;
+    pthread_create(&getIP, NULL, cameraAPI_getIP, (void*) &myCam);
 }
 
 
@@ -136,7 +160,8 @@ int ihm(int argc, char *argv [])
 
 
     /* g_build_filename(): get the path for the file according to the OS */
-    filename =  g_build_filename("../IHM.glade", NULL);
+/*    filename =  g_build_filename("../IHM.glade", NULL);*/
+    filename =  g_build_filename("IHM.glade", NULL);
 
     /* Loading of the "ihm.glade" file */
     gtk_builder_add_from_file(builder, filename, &error);
@@ -167,7 +192,7 @@ int ihm(int argc, char *argv [])
         picture = GTK_WIDGET(gtk_builder_get_object(builder, "picture"));
 
         /* Callback function assignment */
-        g_signal_connect (G_OBJECT (main_window), "destroy", G_CALLBACK (gtk_main_quit), NULL);
+        g_signal_connect (G_OBJECT (main_window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
         g_signal_connect(G_OBJECT(save_button), "clicked", G_CALLBACK(savePicture), inf_label);
         g_signal_connect(G_OBJECT(take_button), "clicked", G_CALLBACK(takePicture), inf_label);
         g_signal_connect(G_OBJECT(detection_button), "clicked", G_CALLBACK(cameraDetection), inf_label);
@@ -186,6 +211,20 @@ int ihm(int argc, char *argv [])
 
 int main(int argc, char *argv [])
 {
+    signal(SIGINT, sigint_handler);
+
+    myCam.status= KO;
+
+    if (argc == 2){
+        strcpy(myCam.IPaddress,argv[1]);
+        cameraAPI_init(&myCam);
+
+    }
+
+/*    printf("Camera status: %d\n",myCam.status);*/
     ihm(argc, argv);
+
+    cameraAPI_destroy(&myCam);
+/*    printf("End\n");*/
     return EXIT_SUCCESS;
 }
