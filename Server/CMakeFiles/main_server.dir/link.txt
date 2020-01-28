@@ -1,0 +1,1 @@
+/root/buildroot-precompiled-2017.08/output/host/bin/arm-linux-gcc    CMakeFiles/main_server.dir/main.c.o CMakeFiles/main_server.dir/libCamera.c.o CMakeFiles/main_server.dir/gpioManager.c.o  -o main_server -lpthread -lv4l2 -ljpeg 

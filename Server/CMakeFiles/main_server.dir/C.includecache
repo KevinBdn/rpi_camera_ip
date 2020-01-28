@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/root/rpi_camera_ip/Server/gpioManager.c
+errno.h
+-
+fcntl.h
+-
+stdio.h
+-
+stdlib.h
+-
+sys/stat.h
+-
+sys/types.h
+-
+unistd.h
+-
+string.h
+-
+gpioManager.h
+/root/rpi_camera_ip/Server/gpioManager.h
+
+/root/rpi_camera_ip/Server/gpioManager.h
+

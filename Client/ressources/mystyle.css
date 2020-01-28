@@ -1,0 +1,25 @@
+#detection_button,#save_button,#take_button{
+    border-color: white;
+    color: white;
+    border-image: none;
+    background-image: none;
+    background-color: black;
+}
+
+#left_rotation_button,#right_rotation_button{
+    border-image: none;
+    background-image: none;
+    background-color: black;
+}
+
+#detection_button:hover,#save_button:hover,#take_button:hover,#left_rotation_button:hover,#right_rotation_button:hover{
+    background-color: gray;
+}
+
+#main_window{
+   background-color: black;
+}
+
+#information_label,#info_frame,#camera_detect_grid{
+    color: white;
+}
