@@ -16,6 +16,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
 include_directories(include)
 
+
 #ajout executable serveur
 add_executable(server src/main.c src/libCamera.c src/gpioManager.c)
 target_link_libraries(server pthread v4l2 jpeg) #permet d'inclure des -l__
