@@ -31,7 +31,7 @@ struct buffer *         buffers         = NULL;
 
 
 static char* deviceName = "/dev/video0";
-static unsigned char jpegQuality = 120;
+static unsigned char jpegQuality = 100;
 
 
 /* Fonction from yuv.c */
@@ -165,9 +165,56 @@ static void deviceInit(CAMERA* myCam)
 		fmt.fmt.pix.sizeimage = min;
 }
 
+void jpegWriteBuff(unsigned char* img, unsigned char* dst, unsigned long dst_size, int quality)
+{
+    //--------------
+    //Function that converts an YUV444 image to a JPEG image in a buffer
+    //--------------
+
+    struct jpeg_compress_struct cinfo;
+    struct jpeg_error_mgr jerr;
+
+    JSAMPROW row_pointer[1];
+
+    // create jpeg data
+    cinfo.err = jpeg_std_error( &jerr );
+    jpeg_create_compress(&cinfo);
+    jpeg_mem_dest(&cinfo, &dst, &dst_size);
+
+    // set image parameters
+    cinfo.image_width = width;
+    cinfo.image_height = height;
+    cinfo.input_components = 3;
+    cinfo.in_color_space = JCS_YCbCr;
+
+    // set jpeg compression parameters to default
+    jpeg_set_defaults(&cinfo);
+    // and then adjust quality setting
+    jpeg_set_quality(&cinfo, quality, TRUE);
+
+    // start compress
+    jpeg_start_compress(&cinfo, TRUE);
+
+    // feed data
+    while (cinfo.next_scanline < cinfo.image_height) {
+        row_pointer[0] = &img[cinfo.next_scanline * cinfo.image_width *  cinfo.input_components];
+        jpeg_write_scanlines(&cinfo, row_pointer, 1);
+    }
+
+    // finish compression
+    jpeg_finish_compress(&cinfo);
+
+    // destroy jpeg data
+    jpeg_destroy_compress(&cinfo);
+
+}
 
 void jpegWrite(unsigned char* img, char* jpegFilename)
 {
+    //--------------
+    //Function that save an YUV444 image to a JPEG image file
+    //--------------
+
     struct jpeg_compress_struct cinfo;
     struct jpeg_error_mgr jerr;
 
@@ -261,19 +308,22 @@ void capture_image(CAMERA* myCam)
         myCam->status = -1;
     }
 
-    //store data - YUV420
-/*    int outfd = open("out.img", O_WRONLY|O_CREAT);*/
-/*    write(outfd, buffers, buf.bytesused);*/
-/*    close(outfd);*/
+    if(-1 == xioctl(myCam->fd, VIDIOC_STREAMOFF, &buf.type))
+    {
+        perror("Pb ending Capture");
+        myCam->status = -1;
+    }
 
     //store data - YUV440 / JPEG
     src = (unsigned char*) buffers[0].start;
+    unsigned char tmp[1000000];
 
     if (myCam->status != -1){
-        YUV420toYUV444(width, height, src, dst);
+        YUV420toYUV444(width, height, src, tmp);
+        jpegWriteBuff(tmp, dst, 3*width*height, 100);
         myCam->lastImage = dst;
     }
-    //jpegWrite(dst, "image.jpg");
+
 }
 
 

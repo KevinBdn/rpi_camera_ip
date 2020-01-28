@@ -1,7 +1,3 @@
-//
-// Created by Dymitry on 20/01/2020.
-//
-
 #ifndef RPI_CAMERA_IP_LIBCAMERA_H
 #define RPI_CAMERA_IP_LIBCAMERA_H
 

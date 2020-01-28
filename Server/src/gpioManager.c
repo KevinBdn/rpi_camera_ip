@@ -7,19 +7,13 @@
 #include <unistd.h>
 #include <string.h>
 
-#define LOW 0
-#define HIGH 1
+#include "gpioManager.h"
 
-typedef struct GPIO{
-    int fd;
-    int num;
-} GPIO;
-
-
-GPIO* initGPIO(int num, char input_output_mode[3])
+GPIO* initGPIO(int num, char input_output_mode[3], int force_mode)
 {
     /*      Initialization of the GPIO using sysfs interface        */
     /*-------                                                       */
+    /*      Use force_mode = 1 to disable the GPIO if it's in use   */
     /*      Return: GPIO*                                           */
     /*            - `fd` : the value FileDescriptor of the gpio     */
     /*            - `num`: the GPIO number                          */
@@ -29,9 +23,16 @@ GPIO* initGPIO(int num, char input_output_mode[3])
     int fd;
     char path[40];
 
-
     sprintf(pin_number,"%d",num);
     sprintf(path,"/sys/class/gpio/gpio%d/direction",num);
+
+    if(force_mode==1)
+    {
+
+        fd = open("/sys/class/gpio/unexport", O_WRONLY);
+        write(fd, pin_number, 2);
+        close(fd);
+    }
 
     fd = open("/sys/class/gpio/export", O_WRONLY);
     if (fd == -1) {
@@ -126,24 +127,4 @@ int closeGPIO(GPIO* gpio)
     return 1;
 }
 
-int main()
-{
 
-    GPIO* gpio;
-    int val=0;
-
-    gpio = initGPIO(24, "out");
-
-    for (int i; i<20; i++)
-    {
-        val = writeGPIO(gpio, !val);
-        sleep(1);
-    }
-
-    closeGPIO(gpio);
-
-
-
-    // And exit
-    return 0;
-}
