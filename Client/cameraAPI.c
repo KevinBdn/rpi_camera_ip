@@ -15,55 +15,11 @@
 #include "cameraAPI.h"
 
 
-void jpegWrite(unsigned char* img, char* jpegFilename)
-{
-    struct jpeg_compress_struct cinfo;
-    struct jpeg_error_mgr jerr;
-
-    JSAMPROW row_pointer[1];
-    FILE *outfile = fopen( jpegFilename, "wb" );
-
-    // try to open file for saving
-    if (!outfile) {
-        fprintf(stderr, "%s error %d, %s\n", "jpeg", errno, strerror(errno));
-    }
-
-    // create jpeg data
-    cinfo.err = jpeg_std_error( &jerr );
-    jpeg_create_compress(&cinfo);
-    jpeg_stdio_dest(&cinfo, outfile);
-
-    // set image parameters
-    cinfo.image_width = width;
-    cinfo.image_height = height;
-    cinfo.input_components = 3;
-    cinfo.in_color_space = JCS_YCbCr;
-
-    // set jpeg compression parameters to default
-    jpeg_set_defaults(&cinfo);
-    // and then adjust quality setting
-    jpeg_set_quality(&cinfo, 120, TRUE);
-
-    // start compress
-    jpeg_start_compress(&cinfo, TRUE);
-
-    // feed data
-    while (cinfo.next_scanline < cinfo.image_height) {
-        row_pointer[0] = &img[cinfo.next_scanline * cinfo.image_width *  cinfo.input_components];
-        jpeg_write_scanlines(&cinfo, row_pointer, 1);
-    }
-
-    // finish compression
-    jpeg_finish_compress(&cinfo);
-
-    // destroy jpeg data
-    jpeg_destroy_compress(&cinfo);
-
-    // close output file
-    fclose(outfile);
-}
-
 int init_socket(int port, char* address){
+    //--------------
+    //Function that creates a socket from a port and an address given
+    //--------------
+
     int socket_service = socket(AF_INET, SOCK_STREAM, 0);
     if (socket_service == -1){
         perror("Unable to create the socket");
@@ -84,6 +40,10 @@ int init_socket(int port, char* address){
 
 int cameraAPI_snapshot(CAMERA* myCam)
 {
+    //--------------
+    //API function to take a snapshot
+    //--------------
+
     int command = 0;
     write(myCam->fd, &command, sizeof(int));
 /*    printf("Sending snapshot order\n");*/
@@ -99,6 +59,10 @@ int cameraAPI_snapshot(CAMERA* myCam)
 
 void* cameraAPI_getIP(void* arg)
 {
+    //--------------
+    //API function to catched the Camera's IP address from broadcast (IPV4 necessary)
+    //--------------
+
     CAMERA* myCam = (CAMERA *) arg;
     int server_fd;
     int data_received = 0;
@@ -153,14 +117,16 @@ void* cameraAPI_getIP(void* arg)
     }
     else
     {
-        printf("\t Camera not found");
+        printf("\t Camera not found\n");
     }
     return NULL;
 }
 
 int cameraAPI_init(CAMERA* myCam)
 {
-
+    //--------------
+    //API function to initialize a Camera
+    //--------------
     myCam->status = -1;
     myCam->lastImage = malloc(sizeof(char)*height*width*3);
     myCam->fd = init_socket(PORT, myCam->IPaddress);
@@ -170,6 +136,9 @@ int cameraAPI_init(CAMERA* myCam)
 
 int cameraAPI_destroy(CAMERA* myCam)
 {
+    //--------------
+    //API function to close a Session
+    //--------------
     int command = 1;
     write(myCam->fd, &command, sizeof(int));
     close(myCam->fd);

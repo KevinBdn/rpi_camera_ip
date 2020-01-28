@@ -17,8 +17,6 @@ static unsigned int width = 640;
 static unsigned int height = 480;
 
 
-void jpegWrite(unsigned char* img, char* jpegFilename);
-
 int init_socket(int port, char* address);
 
 int cameraAPI_init(CAMERA* myCam);
