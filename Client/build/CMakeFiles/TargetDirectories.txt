@@ -1,3 +1,0 @@
-/media/cambernard/676ec35f-a152-4c87-9d04-27a52fd570b3/home/cambernard/Bureau/Ensta/Cours/5.2/Systemes_embarques/rpi_camera_ip/Client/build/CMakeFiles/rebuild_cache.dir
-/media/cambernard/676ec35f-a152-4c87-9d04-27a52fd570b3/home/cambernard/Bureau/Ensta/Cours/5.2/Systemes_embarques/rpi_camera_ip/Client/build/CMakeFiles/client.dir
-/media/cambernard/676ec35f-a152-4c87-9d04-27a52fd570b3/home/cambernard/Bureau/Ensta/Cours/5.2/Systemes_embarques/rpi_camera_ip/Client/build/CMakeFiles/edit_cache.dir

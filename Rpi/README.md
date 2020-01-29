@@ -13,6 +13,6 @@ Pour que la caméra puisse fonctionner, en cas de recompilation, il ne faut pas 
 
 Il faut récupérer l'image résultante puis sur une carte SD disponible à travers /dev/sdX (remplacer X par le chemin vers la carte SD) exécuter la commande suivante :
 
-~~~shell script
+~~~shell
 $ sudo dd if=sdcard.img of=/dev/sdX
 ~~~
