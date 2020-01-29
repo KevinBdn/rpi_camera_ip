@@ -47,50 +47,49 @@ L'IP de la caméra est broadcastée durant les 30 premières secondes en UDP sur
 
 #### <a name="CC">Cross compilation</a>
 
-* **Cloner le répertoire `Github`**
+##### Cloner le répertoire `Github`
 	
-		$ git clone https://github.com/KevinBdn/rpi_camera_ip.git
+	$ git clone https://github.com/KevinBdn/rpi_camera_ip.git
 	
-* **Télécharger l'image docker**
+##### Télécharger l'image docker
 
-	Télécharger l'image Docker du système d'exploitation précompilé grâce à Buildroot:
+Télécharger l'image Docker du système d'exploitation précompilé grâce à Buildroot:
 
-		$ docker pull pblottiere/embsys-rpi3-buildroot-video
+	$ sudo docker pull pblottiere/embsys-rpi3-buildroot-video
 
 
-* **Lancer le docker**
+##### Lancer le docker
 
-	Lancer le docker en partageant le répertoire _rpi_ip_camera_ précédemment cloné, décompresser le répertoire _buildroot_:
+Le chemin du répertoire amenant au dossier cloné devra remplacer le `PATH_TO_REP` ci-dessous.
+Lancer le docker en partageant le répertoire _rpi_ip_camera_ précédemment cloné, décompresser le répertoire _buildroot_:
 	
 
-		$ sudo docker run -it -v PATH_TO_REP/rpi_camera_ip/:/root/rpi_camera_ip --privileged pblottiere/embsys-rpi3-buildroot-video /bin/bash
+	$ sudo docker run -it -v PATH_TO_REP/rpi_camera_ip/:/root/rpi_camera_ip --privileged pblottiere/embsys-rpi3-buildroot-video /bin/bash
 		
-		docker# cd /root/
-		docker# tar zxvf buildroot-precompiled-2017.08.tar.gz
+	docker# cd /root/
+	docker# tar zxvf buildroot-precompiled-2017.08.tar.gz
 
 
-	Installer `cmake` dans le docker:
+Installer `cmake` dans le docker:
 	
-		docker# apt-get update
-		docker# apt-get install
+	docker# apt-get update
+	docker# apt-get install
 
 
-* **Cross-compiler**
+##### Cross-compiler
 
-	Lancer le `cmake` dans le docker:
+Lancer le `cmake` dans le docker:
 	
-		docker# cd rpi_ip_camera/Server/
-		docker# mkdir build
-		docker# cd build
-		docker# cmake ..
-		docker# make
+	docker# cd rpi_camera_ip/Server/
+	docker# mkdir build
+	docker# cd build
+	docker# cmake ..
+	docker# make
 
-	Le fichier exécutable est présent dans le répertoire `rpi_camera_ip/Server/bin` et est nommé `server`.
-	On peut attester de bon fonctionnement de la cross-compilation:
+Le fichier exécutable est présent dans le répertoire `rpi_camera_ip/Server/bin` et est nommé `server`. On peut attester du bon fonctionnement de la cross-compilation:
 	
-		docker# cd ../bin/
-		docker# file server
-		
-		ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-uClibc.so.0, not stripped
-		
-	L'exécutable peut alors 
+	docker# cd ../bin/
+	docker# file server
+	
+	ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-uClibc.so.0, not stripped
+	

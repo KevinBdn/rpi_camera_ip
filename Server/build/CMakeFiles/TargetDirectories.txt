@@ -1,3 +1,0 @@
-/root/rpi_camera_ip/Server/build/CMakeFiles/rebuild_cache.dir
-/root/rpi_camera_ip/Server/build/CMakeFiles/edit_cache.dir
-/root/rpi_camera_ip/Server/build/CMakeFiles/server.dir

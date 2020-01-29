@@ -1,4 +1,4 @@
-/Client/client
-/Client/IHM
-/Server/server
+/Client/bin/client
+/Client/build
+/Server/build
 /buildroot-precompiled-2017.08/
