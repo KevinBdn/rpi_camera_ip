@@ -1,9 +1,8 @@
 Server
 =====
 
-
-#### Architecture de fichier
-
+Architecture de fichier
+--
 * `CMakeLists.txt`: Fichier de configuration pour la cross-compilation effectuée par `cmake` depuis docker, voir partie [Cross Compilation](#CC).
 
 * `src/`: Dossier des codes sources `.c`
@@ -23,30 +22,10 @@ Server
 * `bin/`: Dossier contenant le résultat de la cross-compilation
 
 	* `server`: Exécutable cross-compilé pour le Raspberry Pi 3B.
-	
-On lance le server avec `sudo`pour la gestion du GPIO.
-
-#### Description
-
-La caméra doit être branché au réseau via son port ethernet, avec une IPV4. 
-Le module kernel `bcm2835-v4l2` doit être chargé:
-
-	$ sudo modprobe bcm2835-v4l2
-
-L'IP de la caméra est broadcastée durant les 30 premières secondes en UDP sur le port `5678`. La communication avec le client se fait via le server TCP généré. Une LED branchée sur le GPIO n°18 (numéro de pin 12) indique l'état de la caméra. 
-
-* Server TCP:  Port `32424` par défaut (si pas de port donnée en entré du programme `server`). 
-
-* Indication LED: 
-
-	* S'allume quand le server est bien lancé. 
-	* Clignote à 5Hz si problème de connection avec la caméra
-	* Clignote à 1Hz quand elle broadcast son IP (30 seconde au démarrage)
-	* S'éteint et s'allume quand elle capture une image.
 
 
-#### <a name="CC">Cross compilation</a>
-
+<a name="CC">Cross compilation</a>
+---
 ##### Cloner le répertoire `Github`
 	
 	$ git clone https://github.com/KevinBdn/rpi_camera_ip.git
