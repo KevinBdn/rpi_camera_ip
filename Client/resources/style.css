@@ -1,4 +1,8 @@
-#detection_button,#save_button,#take_button{
+#detection_button,
+#save_button,
+#take_button,
+#start_video_button,
+#stop_video_button{
     border-color: white;
     color: white;
     border-image: none;
@@ -12,7 +16,13 @@
     background-color: black;
 }
 
-#detection_button:hover,#save_button:hover,#take_button:hover,#left_rotation_button:hover,#right_rotation_button:hover{
+#detection_button:hover,
+#save_button:hover,
+#take_button:hover,
+#left_rotation_button:hover,
+#right_rotation_button:hover,
+#start_video_button:hover,
+#stop_video_button:hover{
     background-color: gray;
 }
 
