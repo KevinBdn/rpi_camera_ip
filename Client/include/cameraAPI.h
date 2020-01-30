@@ -4,7 +4,7 @@
 
 #define BROADCAST_PORT 5678
 
-static unsigned  int PORT=32424;
+static unsigned int PORT=32424;
 
 typedef struct {
     int status;

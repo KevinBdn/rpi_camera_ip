@@ -31,6 +31,9 @@ int init_socket(int port, char* address){
     struct hostent* host, *gethostbyname();
     host = gethostbyname(address);
     bcopy(host->h_addr, &sin.sin_addr.s_addr,host->h_length);
+    struct timeval tv;
+    tv.tv_sec = 5;
+    setsockopt(socket_service, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv);
     if (connect(socket_service,(struct sockaddr*) &(sin), sizeof(sin)) != 0){
         printf("Cannot connect to server\n");
         exit(1);
@@ -47,7 +50,8 @@ int cameraAPI_snapshot(CAMERA* myCam)
     int command = 0;
     write(myCam->fd, &command, sizeof(int));
 /*    printf("Sending snapshot order\n");*/
-    read(myCam->fd, &(myCam->status), sizeof(int));
+    int value = read(myCam->fd, &(myCam->status), sizeof(int));
+    if (value < 1) myCam->status = -1;
 /*    printf("Camera status: %d\n", myCam->status);*/
     if (myCam->status != -1){
         // MSG_WAITALL should block until all data has been received. From the manual page on recv.
@@ -75,8 +79,12 @@ int cameraAPI_video(CAMERA* myCam, int stop)
     //API function to get the image stream
     //--------------
         // MSG_WAITALL should block until all data has been received. From the manual page on recv.
-    recv(myCam->fd, myCam->lastImage, sizeof(char)*height*width*3,MSG_WAITALL);
-    write(myCam->fd, &stop, sizeof(int));
+    int len = recv(myCam->fd, myCam->lastImage, sizeof(char)*height*width*3,MSG_WAITALL);
+    if (len==3*height*width)
+    {
+        write(myCam->fd, &stop, sizeof(int));
+    }
+    else myCam->status=-1;
     return myCam->status;
 }
 
@@ -91,7 +99,7 @@ void* cameraAPI_getIP(void* arg)
     int server_fd;
     int data_received = 0;
     struct timeval tv;
-    tv.tv_sec = 30;
+    tv.tv_sec = 60;
     tv.tv_usec = 0;
 
     struct sockaddr_in address, add_other; 

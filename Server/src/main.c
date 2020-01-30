@@ -40,6 +40,7 @@ CAMERA myCam = {0};
 
 void sigint_handler(int sig){
     printf("Signal caught\n");
+    myCam.status=KO;
     close(socket_RV);
     free(myCam.lastImage);
     closeGPIO(ledStatus);
@@ -194,15 +195,13 @@ void* clientRoutine(void* arg){
                 printf("Image taken with status %d\n", myCam.status);
                 write(threadArg->socket, &myCam.status, sizeof(int));
                 printf("Video streaming started\n");
-                while(!stop)
+                while(!stop && myCam.status==OK)
                 {
-                    writeGPIO(ledStatus,LOW);
                     if (myCam.status == 0){
                         send(threadArg->socket, myCam.lastImage, sizeof(char)*width*height*3,0);
                         read(threadArg->socket, &stop, sizeof(int));
                     }
                     capture_image(&myCam, 1);
-                    writeGPIO(ledStatus,HIGH);
                 }
                 capture_image(&myCam, 0);
                 printf("Video streaming ended\n");
@@ -246,12 +245,14 @@ int main(int argc, char* argv[])
 
 {
     signal(SIGINT, sigint_handler);
-
-    printf("Default PORT : %d\n",port);
+    signal(SIGKILL, sigint_handler);
+    signal(SIGTERM, sigint_handler);
 
     if (argc == 2){
         port = atoi(argv[1]);
     }
+
+    printf("API port used : %d\n",port);
 
     initCamera(&myCam);
     pthread_t broadcastThread;
