@@ -57,6 +57,30 @@ int cameraAPI_snapshot(CAMERA* myCam)
     return myCam->status;
 }
 
+int cameraAPI_video_init(CAMERA* myCam)
+{
+    //--------------
+    //API function to init a streaming session
+    //--------------
+
+    int command = 2;
+    write(myCam->fd, &command, sizeof(int));
+    read(myCam->fd, &(myCam->status), sizeof(int));
+    return myCam->status;
+}
+
+int cameraAPI_video(CAMERA* myCam, int stop)
+{
+    //--------------
+    //API function to get the image stream
+    //--------------
+        // MSG_WAITALL should block until all data has been received. From the manual page on recv.
+    recv(myCam->fd, myCam->lastImage, sizeof(char)*height*width*3,MSG_WAITALL);
+    write(myCam->fd, &stop, sizeof(int));
+    return myCam->status;
+}
+
+
 void* cameraAPI_getIP(void* arg)
 {
     //--------------

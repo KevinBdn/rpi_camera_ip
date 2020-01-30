@@ -266,7 +266,7 @@ void jpegWrite(unsigned char* img, char* jpegFilename)
 
 
 //capture image
-void capture_image(CAMERA* myCam)
+void capture_image(CAMERA* myCam, int stream)
 {
     unsigned char* src;
     unsigned char* dst = malloc(width*height*3*sizeof(char));
@@ -294,7 +294,7 @@ void capture_image(CAMERA* myCam)
     FD_ZERO(&fds);
     FD_SET(myCam->fd, &fds);
     struct timeval tv = {0};
-    tv.tv_sec = 2;
+    tv.tv_usec = 200000;
     int r = select(myCam->fd+1, &fds, NULL, NULL, &tv);
     if(-1 == r)
     {
@@ -308,10 +308,13 @@ void capture_image(CAMERA* myCam)
         myCam->status = -1;
     }
 
-    if(-1 == xioctl(myCam->fd, VIDIOC_STREAMOFF, &buf.type))
+    if (!stream)
     {
-        perror("Pb ending Capture");
-        myCam->status = -1;
+        if(-1 == xioctl(myCam->fd, VIDIOC_STREAMOFF, &buf.type))
+        {
+            perror("Pb ending Capture");
+            myCam->status = -1;
+        }
     }
 
     //store data - YUV440 / JPEG

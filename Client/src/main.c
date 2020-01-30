@@ -7,13 +7,13 @@ https://developer.gnome.org/gtk3/stable/
 
 */
 
-#include <gtk/gtk.h>
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <pthread.h>
+#include <gtk/gtk.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 #include "cameraAPI.h"
 
@@ -25,6 +25,8 @@ https://developer.gnome.org/gtk3/stable/
 #define DETECTION 3
 #define DETECTED 4
 #define NOT_DETECTED 5
+#define STREAMING 6
+#define STREAMING_ENDED 7
 
 typedef struct {
     GtkWidget *take_button;
@@ -38,6 +40,8 @@ typedef struct {
     GdkPixbuf *pixbuf;
     int rotation_angle;
     pthread_t IPthread;
+    pthread_t videoThread;
+    int videoStatus;
 } IHM;
 
 
@@ -47,7 +51,10 @@ IHM myIHM = {0};
 void sigint_handler(int sig){
     printf("Signal caught\n");
     gtk_main_quit();
+    myIHM.videoStatus=0;
+    pthread_join(myIHM.videoThread,NULL);
     cameraAPI_destroy(&myCam);
+    gtk_main_quit();
     exit(0);
 }
 
@@ -104,6 +111,8 @@ void updateInfo(int event, char * name)
     case DETECTION: sprintf(action, " • Last event: \n\n\t %s <span foreground='blue'>Detection started</span>", time); buttonBlocker(FALSE,FALSE,FALSE,FALSE); break;
     case DETECTED: sprintf(action, " • Last event: \n\n\t %s <span foreground='green'>Camera detected</span>", time); break;
     case NOT_DETECTED: sprintf(action, " • Last event: \n\n\t %s <span foreground='red'>Camera not detected</span>", time); break;
+    case STREAMING: sprintf(action, " • Last event: \n\n\t %s <span foreground='red'>REC</span>", time); break;
+    case STREAMING_ENDED: sprintf(action, " • Last event: \n\n\t %s <span foreground='blue'>Streaming ended</span>", time); break;
     default: sprintf(action, " • Last event:\n\n\t\t No event");
     }
 
@@ -158,6 +167,36 @@ void takePicture(GtkWidget *widget, gpointer data)
 
 }
 
+void* videoStreaming(void* arg)
+{
+
+
+    while(myIHM.videoStatus)
+    {
+        cameraAPI_video(&myCam, 0);
+        GdkPixbufLoader* loader = gdk_pixbuf_loader_new();
+        gdk_pixbuf_loader_write(loader, myCam.lastImage, 1000000, NULL);
+        myIHM.pixbuf = gdk_pixbuf_loader_get_pixbuf (loader);
+        myIHM.pixbuf = gdk_pixbuf_rotate_simple(myIHM.pixbuf, myIHM.rotation_angle);
+        gtk_image_set_from_pixbuf((GtkImage*) myIHM.picture, myIHM.pixbuf);
+    }
+    cameraAPI_video(&myCam, 1);
+    updateInfo(STREAMING_ENDED, NULL);
+}
+
+
+void videoStartStream(GtkWidget *widget, gpointer data)
+{
+/*    printf("\nTake picture\n");*/
+    cameraAPI_video_init(&myCam);
+    
+    if (myCam.status==OK)
+    {
+        updateInfo(STREAMING, NULL);
+        myIHM.videoStatus = 1;
+        pthread_create(&(myIHM.videoThread), NULL, videoStreaming, NULL);
+    }
+}
 
 void savePicture(GtkWidget *widget, gpointer data)
 {
@@ -282,9 +321,9 @@ int ihm(int argc, char *argv [])
         gtk_widget_set_name(info_frame, "info_frame");
 
         /* Callback function assignment */
-        g_signal_connect (G_OBJECT (myIHM.main_window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+        g_signal_connect (G_OBJECT (myIHM.main_window), "destroy", G_CALLBACK(sigint_handler), NULL);
         g_signal_connect(G_OBJECT(myIHM.save_button), "clicked", G_CALLBACK(savePicture), NULL);
-        g_signal_connect(G_OBJECT(myIHM.take_button), "clicked", G_CALLBACK(takePicture), NULL);
+        g_signal_connect(G_OBJECT(myIHM.take_button), "clicked", G_CALLBACK(videoStartStream), NULL);
         g_signal_connect(G_OBJECT(myIHM.detection_button), "clicked", G_CALLBACK(cameraDetection), NULL);
         g_signal_connect(G_OBJECT(myIHM.left_rotation_button), "clicked", G_CALLBACK(leftRotation), NULL);
         g_signal_connect(G_OBJECT(myIHM.right_rotation_button), "clicked", G_CALLBACK(rightRotation), NULL);

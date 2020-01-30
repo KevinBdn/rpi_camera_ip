@@ -23,6 +23,7 @@
 
 #define SNAPSHOT 0
 #define CLOSE 1
+#define VIDEO 2
 
 #define BROADCAST_PORT 5678
 
@@ -174,17 +175,37 @@ void* clientRoutine(void* arg){
         printf("Waiting for order\n");
         command = -1;
         read(threadArg->socket, &command, sizeof(int));
+        int stop=0;
         switch (command){
             case SNAPSHOT:
                 printf("Received snapshot order\n");
                 writeGPIO(ledStatus,LOW);
-                capture_image(&myCam);
+                capture_image(&myCam,0);
                 writeGPIO(ledStatus,HIGH);
                 printf("Image taken with status %d\n", myCam.status);
                 write(threadArg->socket, &myCam.status, sizeof(int));
                 if (myCam.status == 0){
                     send(threadArg->socket, myCam.lastImage, sizeof(char)*width*height*3,0);
                 }
+                break;
+            case VIDEO:
+                printf("Received video order\n");
+                capture_image(&myCam, 1);
+                printf("Image taken with status %d\n", myCam.status);
+                write(threadArg->socket, &myCam.status, sizeof(int));
+                printf("Video streaming started\n");
+                while(!stop)
+                {
+                    writeGPIO(ledStatus,LOW);
+                    if (myCam.status == 0){
+                        send(threadArg->socket, myCam.lastImage, sizeof(char)*width*height*3,0);
+                        read(threadArg->socket, &stop, sizeof(int));
+                    }
+                    capture_image(&myCam, 1);
+                    writeGPIO(ledStatus,HIGH);
+                }
+                capture_image(&myCam, 0);
+                printf("Video streaming ended\n");
                 break;
             case CLOSE:
                 printf("Client disconnected\n");

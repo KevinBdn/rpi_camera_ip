@@ -11,6 +11,6 @@ typedef struct {
 } CAMERA;
 
 void initCamera(CAMERA* myCam);
-void capture_image(CAMERA* myCam);
+void capture_image(CAMERA* myCam, int stream);
 
 #endif //RPI_CAMERA_IP_LIBCAMERA_H

@@ -23,6 +23,11 @@ int cameraAPI_init(CAMERA* myCam);
 
 int cameraAPI_snapshot(CAMERA* myCam);
 
+int cameraAPI_video_init(CAMERA* myCam);
+
+int cameraAPI_video(CAMERA* myCam, int stop);
+
+
 void* cameraAPI_getIP(void* arg);
 
 int cameraAPI_destroy(CAMERA* myCam);

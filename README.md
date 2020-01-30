@@ -28,8 +28,8 @@ Pour plus de détails nous vous invitons à vous référer aux trois sous partie
 
 [1 - RPI: Comment installer la caméra IP](RPI/README.md)
 
-[2 - Client: Compilation et utilisation du client](Server/README.md)
+[2 - Client: Compilation et utilisation du client](Client/README.md)
 
-[3 - Server: Cross compilation du server](Client/README.md)
+[3 - Server: Cross compilation du server](Server/README.md)
 
 

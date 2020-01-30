@@ -28,24 +28,29 @@ Architecture de fichier
 	
 	* `libCamera.h`: Hearder associé à `libCamera.c`.
 	
-* `bin/`: Dossier contenant le résultat de la cross-compilation
-
-
 
 
 Dépendances
 ---
 
+* GTK 3+ et GDK Pixbuffer:
+
+		sudo apt-get install libgtk-3-dev
+
+* CMake:
+	
+		sudo apt-get install cmake
+
 <a name=C>Compilation</a>
 ---
 
-Utilisation
----
+Pour la compilation du client nous utilisons `cmake`. Il faut se placer dans le dossier git clone `rpi_camera_ip` pui effectuer les commandes suivantes:
 
+	$ cd Client/
+	$ mkdir build
+	$ cd build/
+	$ cmake ..
+	$ make
+	$ cd ../bin/
 
-~~~shell
-$ mkdir build
-$ cd build
-$ cmake ..
-$ make
-~~~
+Le binaire sera alors compilé dans le dossier `bin` sous le nom `client`.
