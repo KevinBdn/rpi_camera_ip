@@ -1,6 +1,3 @@
-// To compile:
-//      gcc -Wall main.c libCamera.c gpioManager.c -o server -lv4l2 -ljpeg -pthread
-//
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -29,16 +26,24 @@
 
 int port = 32424;
 
+//Structure used when a new Client is connected
 typedef struct threadarg{
     int socket;
 } THREAD_ARG;
 
 int socket_RV;
+
 GPIO* ledStatus;
 
 CAMERA myCam = {0};
 
 void sigint_handler(int sig){
+    //--------------
+    // Signal Handler
+    //-------
+    // Input: 
+    //      sig : the signal that called the function
+    //--------------
     printf("Signal caught\n");
     myCam.status=KO;
     close(socket_RV);
@@ -55,6 +60,9 @@ void getIPaddress(char host[50])
 {
     //--------------
     //Function that get the IP address from the 'eth0' interface (IPV4 necessary)
+    //-------
+    // Input: 
+    //      host : string that will receive the IP address
     //--------------
 
     printf("Get IP address:\n");
@@ -96,6 +104,9 @@ void* broadcastIPaddress(void* arg)
     //--------------
     //Function called by a thread that broadcasts the IP address of the Camera (IPV4 necessary).
     // The IP is broadcasted during 30s, 30 times.
+    //-------
+    // Input: 
+    //      arg : NULL - is not used but necessary for a thread
     //--------------
 
     int server_fd; 
@@ -141,6 +152,10 @@ void* broadcastIPaddress(void* arg)
 int initSocketServer(int port, struct sockaddr_in* sinp){
     //--------------
     //Function that initializes a socket RV.
+    //-------
+    // Input: 
+    //      port : port used for the socket RV
+    //      sinp : ip used for the socket RV
     //--------------
 
     int sock_RV = socket(AF_INET, SOCK_STREAM, 0);
@@ -167,11 +182,15 @@ int initSocketServer(int port, struct sockaddr_in* sinp){
 void* clientRoutine(void* arg){
     //--------------
     //Function called after a client is connected.
+    //-------
+    // Input: 
+    //      arg : NULL - is not used but necessary for a thread
     //--------------
 
     THREAD_ARG* threadArg = (THREAD_ARG*) arg;
     int end = 0;
     int command;
+    int n=0;
     while (!end){
         printf("Waiting for order\n");
         command = -1;
@@ -197,10 +216,13 @@ void* clientRoutine(void* arg){
                 printf("Video streaming started\n");
                 while(!stop && myCam.status==OK)
                 {
+                   if (n++%20) writeGPIO(ledStatus,LOW);
                     if (myCam.status == 0){
                         send(threadArg->socket, myCam.lastImage, sizeof(char)*width*height*3,0);
                         read(threadArg->socket, &stop, sizeof(int));
                     }
+                   if (n++%20) writeGPIO(ledStatus,HIGH);
+                    n=n%20;
                     capture_image(&myCam, 1);
                 }
                 capture_image(&myCam, 0);
@@ -220,6 +242,9 @@ void* clientRoutine(void* arg){
 void sendStatus(int socket){
     //--------------
     //Function that send the Camera status
+    //-------
+    // Input: 
+    //      socket : recipient socket
     //--------------
 
     write(socket, &(myCam.status), sizeof(int));
@@ -229,6 +254,10 @@ void sendStatus(int socket){
 void waitForConnection(int socket_RV, struct sockaddr_in* sin){
     //--------------
     //Function that calls the Client Routine when a new client is connected
+    //-------
+    // Input: 
+    //      socket_RV : the socket RV of the server
+    //      sin : the address of the new Client
     //--------------
 
     socklen_t length = sizeof(*sin);

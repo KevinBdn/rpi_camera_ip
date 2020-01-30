@@ -67,7 +67,9 @@ Vous devez vous placer dans le répertoire cloné `rpi_camera_ip` et remplacer l
 
 **2. Cabler la LED et la Pi Camera**
 
-Cabler une LED sur le port 18 (pin numéro 12) du GPIO.
+Cabler une LED sur le port 18 (pin numéro 12) du GPIO:
+
+![](../Resources/rpi_schema.png)
 Cabler la Pi Caméra V2 sur le port CAMERA du Raspberry.
 
 **3. Brancher le cable ethernet**
@@ -82,10 +84,15 @@ Le server se mettra en route automatiquement et broadcastera son adresse IP sur 
 * **LED**: Indique l'état du server
 
 	* S'allume quand le server est bien lancé. 
-	* Clignote à 5Hz si il y a un problème de connection avec la caméra. _Par exemple lorsque la caméra n'est pas branchée_
+	
+	* Clignote à 5Hz si il y a un problème de connection avec la caméra. 
+>Par exemple lorsque la caméra n'est pas branchée
+
 	* Clignote à 1Hz quand elle broadcaste son IP (30 secondes au démarrage)
+	
 	* S'éteint et s'allume quand une image est prise.
 
+	* S'éteint pendant 20 frames et s'allume pendant 20 frames quand la caméra est en mode vidéo. La fréquence de clignotement symbolise donc la vitesse d'échange des données sur le réseau.
 
 * **Communication**:
 	

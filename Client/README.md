@@ -12,9 +12,10 @@ Nous avons choisi de coder le Client tout en C.
 
 Nous avons développé une IHM en C en utilisant la librairie `GTK3+`. Le squelette de l'IHM a été effectué via `Glade`. La personalisation de l'affichage s'effecute via du CSS.
 
-
 Architecture de fichier
 ---
+
+Voici l'architecture de fichier du côté client. Pour comprendre le fonctionnement du client vous pouvez lire les codes sources des fichiers décrits ci-dessous.
 
 * `CMakeLists.txt`: Fichier de configuration pour la compilation effectuée par `cmake`, voir partie [Compilation](#C).
 
@@ -28,7 +29,7 @@ Architecture de fichier
 
 * `src/`: Dossier des codes sources `.c`
 	
-	* `cameraAPI.c`: Fonctions permettant de communiquer via socket avec le `server`.
+	* `cameraAPI.c`: API comportant les fonctions permettant de communiquer via socket avec le `server`.
 
 	* `main.c`: Programme principal créant l'IHM en la reliant à l'API de la caméra que nous avons développé.
 
@@ -80,11 +81,11 @@ Pour exécuter le client, suivant si l'on connait l'addresse IP de la caméra (n
 
 * IP connue: 
 	
-		./server $IP_CAMERA
+		./client $IP_CAMERA
 
 * IP non connue: 
 		
-		./server
+		./client
 		
 **2. Utilisation de l'IHM**
 
@@ -105,7 +106,9 @@ Alimenter d'abord la caméra avant de lancer le programme avec l'IP en argument.
 * Dans les deux cas vous pourrez alors par la suite:
 	
 	* Prendre un photo : ![](../Resources/take_picture.png)
-	* Afficher le flux vidéo en directe : ![](../Resources/start_video.png)
+> Une photo nécessite environ 2-3s.
+	* Afficher le flux vidéo en directe : ![](../Resources/start_video.png) 
+> La rapidité et latence de la vidéo dépend de la qualité du réseau.
 	* Stopper le flux vidéo si il est lancé : ![](../Resources/stop_video.png)
 	* Tourner l'image de 90° dans le sens horaire: ![](../Resources/left_rotation.png)
 	* Tourner l'image de 90° dans le sens horaire: ![](../Resources/right_rotation.png)

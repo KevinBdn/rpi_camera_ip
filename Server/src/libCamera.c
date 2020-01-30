@@ -59,6 +59,7 @@ void YUV420toYUV444(int width, int height, unsigned char* src, unsigned char* ds
     }
 }
 
+/* Fonction from v4l2grab.c */
 //check if the capture is available or not
 static int xioctl(int fd, int request, void *arg)
 {
@@ -71,7 +72,7 @@ static int xioctl(int fd, int request, void *arg)
     return r;
 }
 
-
+/* Fonction adapted from v4l2grab.c */
 static void deviceInit(CAMERA* myCam)
 {
 	struct v4l2_capability cap;
@@ -169,6 +170,12 @@ void jpegWriteBuff(unsigned char* img, unsigned char* dst, unsigned long dst_siz
 {
     //--------------
     //Function that converts an YUV444 image to a JPEG image in a buffer
+    //-------
+    // Input: 
+    //      img : the input image in YUV444 format
+    //      dst : the ouput buffer with the img in JPEG format
+    //      dst_size : size of the output buffer
+    //      quality : percentage of quality for JPEG compression
     //--------------
 
     struct jpeg_compress_struct cinfo;
@@ -268,6 +275,13 @@ void jpegWrite(unsigned char* img, char* jpegFilename)
 //capture image
 void capture_image(CAMERA* myCam, int stream)
 {
+    //-------------
+    // Function that capture an image, it can enable or disable the camera.
+    //-------
+    // Input: 
+    //      myCam : CAMERA structure that will host the image taken
+    //      stream : it allows to take picture or a video
+    //--------------
     unsigned char* src;
     unsigned char* dst = malloc(width*height*3*sizeof(char));
     struct v4l2_buffer buf = {0};
@@ -333,7 +347,7 @@ void capture_image(CAMERA* myCam, int stream)
 
 
 
-
+/* Fonction adapted from v4l2grab.c */
 //retrieve camera capabilities
 int print_caps(int fd)
 {
@@ -415,7 +429,7 @@ int print_caps(int fd)
 
 
 
-
+/* Fonction adapted from v4l2grab.c */
 static void mmapInit(CAMERA* myCam)
 {
     struct v4l2_requestbuffers req;
@@ -477,7 +491,14 @@ static void mmapInit(CAMERA* myCam)
     }
 }
 
+
 void initCamera(CAMERA* myCam){
+    //-------------
+    // Initialize the pi camera device.
+    //-------
+    // Input: 
+    //      myCam : CAMERA structure that will represent the Pi Camera device
+    //--------------
     struct stat st;
     myCam->status = 0;
 

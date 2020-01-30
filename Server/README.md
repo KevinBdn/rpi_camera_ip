@@ -2,7 +2,10 @@ Server
 =====
 
 Architecture de fichier
---
+---
+
+Voici l'architecture de fichier du côté server. Pour comprendre le fonctionnement du server vous pouvez lire les codes sources des fichiers décrits ci-dessous.
+
 * `CMakeLists.txt`: Fichier de configuration pour la cross-compilation effectuée par `cmake` depuis docker, voir partie [Cross Compilation](#CC).
 
 * `src/`: Dossier des codes sources `.c`

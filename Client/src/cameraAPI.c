@@ -17,7 +17,11 @@
 
 int init_socket(int port, char* address){
     //--------------
-    //Function that creates a socket from a port and an address given
+    //Function that creates a TCP/IP connection with the server
+    //-------
+    // Input: 
+    //      port : port used for the TCP/IP connection
+    //      address : IP address of the server
     //--------------
 
     int socket_service = socket(AF_INET, SOCK_STREAM, 0);
@@ -45,6 +49,9 @@ int cameraAPI_snapshot(CAMERA* myCam)
 {
     //--------------
     //API function to take a snapshot
+    //-------
+    // Input: 
+    //      myCam : the camera that will host the image sent by the server
     //--------------
 
     int command = 0;
@@ -65,6 +72,9 @@ int cameraAPI_video_init(CAMERA* myCam)
 {
     //--------------
     //API function to init a streaming session
+    //-------
+    // Input: 
+    //      myCam : the camera that will host the image sent by the server
     //--------------
 
     int command = 2;
@@ -77,6 +87,10 @@ int cameraAPI_video(CAMERA* myCam, int stop)
 {
     //--------------
     //API function to get the image stream
+    //-------
+    // Input: 
+    //      myCam : the camera that will host the image sent by the server
+    //      stop : if the value is 1 then it allows to stop the streaming in client and server part.
     //--------------
         // MSG_WAITALL should block until all data has been received. From the manual page on recv.
     int len = recv(myCam->fd, myCam->lastImage, sizeof(char)*height*width*3,MSG_WAITALL);
@@ -93,6 +107,9 @@ void* cameraAPI_getIP(void* arg)
 {
     //--------------
     //API function to catched the Camera's IP address from broadcast (IPV4 necessary)
+    //-------
+    // Input: 
+    //      arg : the camera that will receive the IP address detected
     //--------------
 
     CAMERA* myCam = (CAMERA *) arg;
@@ -158,6 +175,9 @@ int cameraAPI_init(CAMERA* myCam)
 {
     //--------------
     //API function to initialize a Camera
+    //-------
+    // Input: 
+    //      myCam : the camera to initialize
     //--------------
     myCam->status = -1;
     myCam->lastImage = malloc(sizeof(char)*height*width*3);
@@ -170,6 +190,9 @@ int cameraAPI_destroy(CAMERA* myCam)
 {
     //--------------
     //API function to close a Session
+    //-------
+    // Input: 
+    //      myCam : the camera to destroy
     //--------------
     int command = 1;
     write(myCam->fd, &command, sizeof(int));

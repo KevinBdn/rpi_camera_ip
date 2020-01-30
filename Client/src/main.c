@@ -1,12 +1,3 @@
-/* 
-To compile:
-gcc -g main.c cameraAPI.c -o client  -ljpeg -pthread `pkg-config --libs --cflags gtk+-3.0 gmodule-2.0`
-
-Official documentation:
-https://developer.gnome.org/gtk3/stable/
-
-*/
-
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
@@ -29,7 +20,7 @@ https://developer.gnome.org/gtk3/stable/
 #define STREAMING 6
 #define STREAMING_ENDED 7
 
-
+// Strucutre of the GTK element used and some variables corresponding 
 typedef struct {
     GtkWidget *take_button;
     GtkWidget *save_button;
@@ -66,6 +57,9 @@ void closeAll()
 void sigint_handler(int sig){
     //--------------
     // Signal Handler
+    //-------
+    // Input: 
+    //      sig : the signal that called the function
     //--------------
     printf("Signal caught\n");
     closeAll();
@@ -76,6 +70,9 @@ void sigint_handler(int sig){
 void format_time(char *output){
     //--------------
     // Format the time to print
+    //-------
+    // Input: 
+    //      output : string containing the date data
     //--------------
     time_t rawtime;
     struct tm * timeinfo;
@@ -90,6 +87,13 @@ void buttonBlocker(gboolean take, gboolean save, gboolean detect, gboolean rotat
 {
     //--------------
     //Function to enable or disable the GTK's buttons
+    //-------
+    // Input: 
+    //      take : Boolean to enable or disable the corresponding button
+    //      save : Boolean to enable or disable the corresponding button
+    //      detect : Boolean to enable or disable the corresponding button
+    //      rotation : Boolean to enable or disable the corresponding button
+    //      video : Boolean to enable or disable the corresponding button
     //--------------
     if (take) gtk_widget_set_sensitive(myIHM.take_button, TRUE);
     else gtk_widget_set_sensitive(myIHM.take_button, FALSE);
@@ -122,7 +126,11 @@ void buttonBlocker(gboolean take, gboolean save, gboolean detect, gboolean rotat
 void updateInfo(int event, char * name)
 {
     //--------------
-    //Function to update the Information frame in the IHM
+    //Function to update the Information frame in the IHM.
+    //-------
+    // Input: 
+    //      event : the event that need to update of the camera's data
+    //      name : name file used when the picture was saved
     //--------------
     char info[1000];
     char state[250];
@@ -134,23 +142,49 @@ void updateInfo(int event, char * name)
     switch(myCam.status)
     {
     case OK: 
-        sprintf(state," • Camera state: <span foreground='green'>Ready</span>\n\n • IP Address: <span foreground='yellow'>%s</span>",myCam.IPaddress); buttonBlocker(TRUE,FALSE,FALSE,FALSE,TRUE);break;
-    case KO: sprintf(state," • Camera state: <span foreground='red'>No connection</span>\n\n • IP Address: <span foreground='red'>No connection</span>"); buttonBlocker(FALSE,FALSE,TRUE,FALSE,FALSE);break;
+        sprintf(state," • Camera state: <span foreground='green'>Ready</span>\n\n • IP Address: <span foreground='yellow'>%s</span>",myCam.IPaddress);
+        buttonBlocker(TRUE,FALSE,FALSE,FALSE,TRUE);
+        break;
+    case KO: 
+        sprintf(state," • Camera state: <span foreground='red'>No connection</span>\n\n • IP Address: <span foreground='red'>No connection</span>");
+        buttonBlocker(FALSE,FALSE,TRUE,FALSE,FALSE);
+        break;
     }
 
     switch(event)
     {
-    case TAKE: sprintf(action, " • Last event:\n\n\t %s <span foreground='blue'>Picture taken</span>", time); buttonBlocker(TRUE,TRUE,FALSE,TRUE,TRUE);break;
-    case SAVE: sprintf(action, " • Last event: \n\n\t %s <span foreground='blue'>Picture saved</span>\n\t(%.30s)", time, name);
-               if(!myIHM.videoStatus) buttonBlocker(TRUE,TRUE,FALSE,TRUE,TRUE);
-               else buttonBlocker(FALSE,TRUE,FALSE,TRUE,TRUE); break;
-    case DETECTION: sprintf(action, " • Last event: \n\n\t %s <span foreground='blue'>Detection started</span>", time); buttonBlocker(FALSE,FALSE,FALSE,FALSE,FALSE); break;
-    case DETECTED: sprintf(action, " • Last event: \n\n\t %s <span foreground='green'>Camera detected</span>", time); break;
-    case NOT_DETECTED: sprintf(action, " • Last event: \n\n\t %s <span foreground='red'>Camera not detected</span>", time); break;
-    case STREAMING: sprintf(action, " • Last event: \n\n\t %s <span foreground='red'>REC</span>", time); buttonBlocker(FALSE,TRUE,FALSE,TRUE,TRUE); break;
-    case STREAMING_ENDED: sprintf(action, " • Last event: \n\n\t %s <span foreground='blue'>Streaming ended</span>", time);buttonBlocker(TRUE,TRUE,FALSE,TRUE,TRUE); break;
-    case DISCONNECTION : sprintf(action, " • Last event:\n\n\t %s <span foreground='red'>Camera Disconnected</span>", time);break;
-    default: sprintf(action, " • Last event:\n\n\t\t No event");
+    case TAKE: 
+        sprintf(action, " • Last event:\n\n\t %s <span foreground='blue'>Picture taken</span>", time); 
+        buttonBlocker(TRUE,TRUE,FALSE,TRUE,TRUE);
+        break;
+    case SAVE: 
+        sprintf(action, " • Last event: \n\n\t %s <span foreground='blue'>Picture saved</span>\n\n\t( <span foreground='gray'>%.30s</span> )", time, name);
+        if(!myIHM.videoStatus) buttonBlocker(TRUE,TRUE,FALSE,TRUE,TRUE);
+        else buttonBlocker(FALSE,TRUE,FALSE,TRUE,TRUE);
+        break;
+    case DETECTION:
+        sprintf(action, " • Last event: \n\n\t %s <span foreground='blue'>Detection started</span>", time); 
+        buttonBlocker(FALSE,FALSE,FALSE,FALSE,FALSE);
+        break;
+    case DETECTED:
+        sprintf(action, " • Last event: \n\n\t %s <span foreground='green'>Camera detected</span>", time);
+        break;
+    case NOT_DETECTED:
+        sprintf(action, " • Last event: \n\n\t %s <span foreground='red'>Camera not detected</span>", time);
+        break;
+    case STREAMING:
+        sprintf(action, " • Last event: \n\n\t %s <span foreground='red'>REC</span>", time);
+        buttonBlocker(FALSE,TRUE,FALSE,TRUE,TRUE);
+        break;
+    case STREAMING_ENDED: 
+        sprintf(action, " • Last event: \n\n\t %s <span foreground='blue'>Streaming ended</span>", time);
+        buttonBlocker(TRUE,TRUE,FALSE,TRUE,TRUE);
+        break;
+    case DISCONNECTION :
+        sprintf(action, " • Last event:\n\n\t %s <span foreground='red'>Camera Disconnected</span>", time);
+        break;
+    default:
+        sprintf(action, " • Last event:\n\n\t\t No event");
     }
 
     sprintf(info,"%s\n\n%s\n",state,action);
@@ -161,6 +195,12 @@ int open_dialog(char * name_file)
 {
     //--------------
     //Function that opens a dialog window to select a save file.
+    //-------
+    // Input: 
+    //      name_file : name of the picture saved
+    // Output:
+    //      1 : The picture was saved
+    //      0 : The window was closed
     //--------------
     GtkWidget *dialog;
 
@@ -193,6 +233,10 @@ void takePicture(GtkWidget *widget, gpointer data)
 {
     //--------------
     //Callback function called when the button 'Take a snapshot' is clicked.
+    //-------
+    // Input: 
+    //      widget: the widget that called the function
+    //      data : NULL - is not used
     //--------------
     cameraAPI_snapshot(&myCam);
     if (myCam.status == OK)
@@ -216,6 +260,9 @@ void* videoStreaming(void* arg)
     //--------------
     //Thread that calls the cameraAPI_video function.
     //  Used to display the video stream.
+    //-------
+    // Input: 
+    //      arg : NULL - is not used but necessary for a thread
     //--------------
 
     while(myIHM.videoStatus)
@@ -245,6 +292,10 @@ void videoStartStream(GtkWidget *widget, gpointer data)
 {
     //--------------
     //Callback function called when the button 'Start video' is clicked.
+    //-------
+    // Input: 
+    //      widget: the widget that called the function
+    //      data : NULL - is not used
     //--------------
     cameraAPI_video_init(&myCam);
     
@@ -260,6 +311,10 @@ void videoStopStream(GtkWidget *widget, gpointer data)
 {
     //--------------
     //Callback function called when the button 'Stop video' is clicked.
+    //-------
+    // Input: 
+    //      widget: the widget that called the function
+    //      data : NULL - is not used
     //--------------
     myIHM.videoStatus=0;
     pthread_join(myIHM.videoThread,NULL);
@@ -271,6 +326,10 @@ void savePicture(GtkWidget *widget, gpointer data)
     //--------------
     //Callback function called when the button 'Save' is clicked.
     // Called the open_dialog function.
+    //-------
+    // Input: 
+    //      widget: the widget that called the function
+    //      data : NULL - is not used
     //--------------
     char name_file[256];
     int success = open_dialog(name_file);
@@ -282,6 +341,9 @@ void* checkIPdetection(void* arg)
 {
     //--------------
     //Thread to know when and if the camera is detected.
+    //-------
+    // Input: 
+    //      arg : NULL - is not used but necessary for a thread
     //--------------
     pthread_join(myIHM.IPthread, NULL);
     if (myCam.status==0) updateInfo(DETECTED, NULL);
@@ -293,6 +355,10 @@ void cameraDetection(GtkWidget *widget, gpointer data)
     //--------------
     //Callback function called when the button 'Detection' is clicked.
     //  Called the cameraAPI_getIP function as thread.
+    //-------
+    // Input: 
+    //      widget: the widget that called the function
+    //      data : NULL - is not used
     //--------------
     printf("\nCamera detection started ...\n");
     pthread_t checkIP;
@@ -305,6 +371,10 @@ void leftRotation(GtkWidget *widget, gpointer data)
 {
     //--------------
     //Callback function called when the button Left rotation is clicked.
+    //-------
+    // Input: 
+    //      widget: the widget that called the function
+    //      data : NULL - is not used
     //--------------
     myIHM.rotation_angle= (myIHM.rotation_angle+90)%360;
     myIHM.pixbuf = gdk_pixbuf_rotate_simple(myIHM.pixbuf, 90);
@@ -315,6 +385,10 @@ void rightRotation(GtkWidget *widget, gpointer data)
 {
     //--------------
     //Callback function called when the button Right rotation is clicked.
+    //-------
+    // Input: 
+    //      widget: the widget that called the function
+    //      data : NULL - is not used
     //--------------
     myIHM.rotation_angle= (myIHM.rotation_angle+270)%360;
     myIHM.pixbuf = gdk_pixbuf_rotate_simple(myIHM.pixbuf, 270);
@@ -346,6 +420,10 @@ int ihm(int argc, char *argv [])
 {
     //--------------
     //Main function of the HMI. Load the glade file and build the HMI.
+    //-------
+    // Input: 
+    //      argc : the number of arguments used on client execution
+    //      argv : the arguments used on client execution
     //--------------
 
     GtkWidget * info_frame;
