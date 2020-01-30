@@ -32,7 +32,7 @@ Les fonctionnalités implémentées sont :
 > L'adresse IP est récupérée via broadcast de cette dernière par la RPI3.
 
 * **4.** Visualisation du flux vidéo en directe depuis un client.
-> Le flux vidéo est un envoi successif d'image JPEG. La latence dépend de la qualité du réseau.
+> Le flux vidéo est un envoi successif d'images JPEG. La latence dépend de la qualité du réseau.
 
 Utilisation
 ----

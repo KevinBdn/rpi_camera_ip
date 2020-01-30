@@ -4,11 +4,11 @@ Client
 Choix
 -----
 
-** 1. Langage**
+**1. Langage**
 
 Nous avons choisi de coder le Client tout en C.
 
-** 2. IHM**
+**2. IHM**
 
 Nous avons développé une IHM en C en utilisant la librairie `GTK3+`. Le squelette de l'IHM a été effectué via `Glade`. La personalisation de l'affichage s'effecute via du CSS.
 
@@ -69,13 +69,13 @@ Le binaire sera alors compilé dans le dossier `bin/` sous le nom `client`.
 Utilisation
 -----
 
-** 0. Principe **
+**0. Principe**
 
 Le principe de notre client est simple, il utilise l'API caméra que nous avons mis en place via des sockets `TCP/IP` sur le port `32424`. Une détection automatique de la caméra sur le réseau peut d'effectuer dans les 30 premières secondes du branchement de la caméra en utilisant le client. Cette détection utilise un socket `UDP` broadcasté sur le port `5678`.
 
 Les images reçues sont du type `JPEG`.
 
-** 1. Lancement**
+**1. Lancement**
 
 Pour exécuter le client, suivant si l'on connait l'addresse IP de la caméra (notée `$IP_CAMERA`) ou non, il suffit de lancer la commande:
 
@@ -105,10 +105,8 @@ Alimenter d'abord la caméra avant de lancer le programme avec l'IP en argument.
 
 * Dans les deux cas vous pourrez alors par la suite:
 	
-	* Prendre un photo : ![](../Resources/take_picture.png)
-> Une photo nécessite environ 2-3s.
-	* Afficher le flux vidéo en directe : ![](../Resources/start_video.png) 
-> La rapidité et latence de la vidéo dépend de la qualité du réseau.
+	* Prendre un photo : ![](../Resources/take_picture.png) _Une photo nécessite environ 2-3s._ 
+	* Afficher le flux vidéo en directe : ![](../Resources/start_video.png)  _La rapidité et latence de la vidéo dépend de la qualité du réseau_
 	* Stopper le flux vidéo si il est lancé : ![](../Resources/stop_video.png)
 	* Tourner l'image de 90° dans le sens horaire: ![](../Resources/left_rotation.png)
 	* Tourner l'image de 90° dans le sens horaire: ![](../Resources/right_rotation.png)
