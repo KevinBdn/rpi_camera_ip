@@ -34,7 +34,7 @@ Voici l'architecture de fichier du côté server. Pour comprendre le fonctionnem
 
 Vous pouvez compiler le `server` soit manuellement soit automatiquement. Pour la façon automatique vous devez quand même au préalable avoir au moins une fois réalisé les étapes **1.** et **2.** de la méthode manuelle.
 
-###Manuellement
+### Manuellement
 
 Voici les différentes commandes nécessaires pour cross-compiler le `server`.
 
@@ -84,7 +84,7 @@ Le fichier exécutable est présent dans le répertoire `rpi_camera_ip/Server/bi
 	
 	ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-uClibc.so.0, not stripped
 
-###Automatiquement
+### Automatiquement
 
 Cette méthode consiste à utiliser les commandes de la méthode manuelle mais directement depuis un script shell envoyé en entré du docker. Pour ceci veillez à avoir, au préalable, au moins une fois exécuté les étapes **1.** et **2.** de la méthode manuelle.
 
