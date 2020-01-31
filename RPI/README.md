@@ -1,4 +1,4 @@
-# Rapsberry PI - Configuration
+# Rapsberry PI - Configuration et installation
 
 Ici nous décrivons comment transformer une Rapsbery Pi 3B et une Pi Camera V2 en Camera IP. Les étapes nécessaires sont les suivantes:
 
@@ -31,7 +31,7 @@ Pour que la caméra puisse fonctionner, en cas de recompilation, il ne faut pas 
 
 N'ayant pas compilé l'OS, nous avons récupéré l'image `sdcard.img` depuis le docker comme décrit dans le [sujet](../sujet.md). 
 Il faut alors alors insérer une carte SD: `/dev/mmcblk0`.
-On peut la départitionner avec `gparted` si elle est déjà partitionnée. Puis afin d'éviter toute erreur on commence par écrire des 0 sur la cartes:
+On peut la départitionner/formater avec `gparted` si elle est déjà partitionnée. Puis afin d'éviter toute erreur on commence par flasher la carte avec des zeros:
 
 	$ sudp dd if=/dev/zero of=/dev/mmcblk0 status=progress
 
@@ -53,10 +53,10 @@ Voici donc les étapes à effectuer afin d'installer le server sur la carte SD:
 
 **2. Exécution de l'installation automatique**
 
-Vous devez vous placer dans le répertoire cloné `rpi_camera_ip` et remplacer la variable `PATH_TO_CARD` par le chemin d'accès à la partition du RFS de la carte précedemment flashée puis tapez les commandes:
+Vous devez vous placer dans le répertoire cloné `rpi_camera_ip` et remplacer la variable `$PATH_TO_CARD` par le chemin d'accès à la partition du RFS de la carte précedemment flashée puis tapez les commandes:
 
-	$ cd RPI
-	$ sudo sh installation.sh
+	$ cd RPI/
+	$ sudo sh installation.sh $PATH_TO_CARD
 
 
 

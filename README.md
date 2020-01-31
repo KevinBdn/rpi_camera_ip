@@ -43,6 +43,6 @@ Pour l'utilisation nous vous invitons à vous référer aux trois sous parties:
 
 [2 - Client: Compilation et utilisation du client](Client/README.md)
 
-[3 - Server: Cross compilation et installation du server](Server/README.md)
+[3 - Server: Cross compilation du server](Server/README.md)
 
 

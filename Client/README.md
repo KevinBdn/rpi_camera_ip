@@ -1,4 +1,4 @@
-Client
+Client - Compilation et utilisation
 =====
 
 Choix
@@ -6,7 +6,7 @@ Choix
 
 **1. Langage**
 
-Nous avons choisi de coder le Client tout en C.
+Nous avons choisi de coder le Client tout en C. Les codes sont rédigés en anglais, les README en français.
 
 **2. IHM**
 
