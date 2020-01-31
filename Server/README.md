@@ -12,7 +12,7 @@ Voici l'architecture de fichier du côté server. Pour comprendre le fonctionnem
 
 * `src/`: Dossier des codes sources `.c`
 	
-	* `gpioManager.c`: Petite biblitohèque que nous avons développé utilisant `sysfs` pour utiliser un port GPIO en sortie. 
+	* `gpioManager.c`: Petite bibliothèque que nous avons développé utilisant `sysfs` pour utiliser un port GPIO en sortie. 
 
 	* `libCamera.c`: Librairie inspirée de `v4l2grab`, n'utilisant que les fonctions nécessaires, permettant de prendre une photo depuis la Pi Camera.
 
@@ -20,9 +20,9 @@ Voici l'architecture de fichier du côté server. Pour comprendre le fonctionnem
 
 * `include/`: Dossier contenant les headers `.h`
 
-	* `gpioManager.h`: Hearder associé à `gpioManger.c`.
+	* `gpioManager.h`: Header associé à `gpioManger.c`.
 	
-	* `libCamera.h`: Hearder associé à `libCamera.c`.
+	* `libCamera.h`: Header associé à `libCamera.c`.
 	
 * `bin/`: Dossier contenant le résultat de la cross-compilation
 
@@ -88,7 +88,7 @@ Le fichier exécutable est présent dans le répertoire `rpi_camera_ip/Server/bi
 
 Cette méthode consiste à utiliser les commandes de la méthode manuelle mais directement depuis un script shell envoyé en entré du docker. Pour ceci veillez à avoir, au préalable, au moins une fois exécuté les étapes **1.** et **2.** de la méthode manuelle.
 
-Placez-vous ensuite dans le répertoire `rpi_camera_ip` cloné puis exécuter la commande ci-dessous:
+Placez-vous ensuite dans le répertoire `rpi_camera_ip` cloné puis exécutez la commande ci-dessous:
 
 	$ cd ..
 	$ PATH_TO_REP=`pwd`

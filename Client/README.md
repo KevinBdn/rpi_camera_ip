@@ -6,11 +6,11 @@ Choix
 
 **1. Langage**
 
-Nous avons choisi de coder le Client tout en C. Les codes sont rédigés en anglais, les README en français.
+Nous avons choisi de coder le Client tout en C. Les codes sont rédigés en anglais (noms des variables, noms des fonctions, commentaires), les README en français.
 
 **2. IHM**
 
-Nous avons développé une IHM en C en utilisant la librairie `GTK3+`. Le squelette de l'IHM a été effectué via `Glade`. La personalisation de l'affichage s'effecute via du CSS.
+Nous avons développé une IHM en C en utilisant la librairie `GTK3+`. Le squelette de l'IHM a été effectué via `Glade`. La personnalisation de l'affichage s’effectue via du CSS.
 
 Architecture de fichier
 ---
@@ -23,7 +23,7 @@ Voici l'architecture de fichier du côté client. Pour comprendre le fonctionnem
 
 	* `IHM.glade`: IHM sous glade, importée via un builder en C.
 	
-	* `stryle.css`: Feuille CSS permettant de personaliser l'affichage de l'IHM.
+	* `stryle.css`: Feuille CSS permettant de personnaliser l'affichage de l'IHM.
 	
 	* `default.jpg`: Image par défaut du client.
 
@@ -35,9 +35,9 @@ Voici l'architecture de fichier du côté client. Pour comprendre le fonctionnem
 
 * `include/`: Dossier contenant les headers `.h`
 
-	* `cameraAPI.h`: Hearder associé à `cameraAPI.c`.
+	* `cameraAPI.h`: Header associé à `cameraAPI.c`.
 	
-	* `libCamera.h`: Hearder associé à `libCamera.c`.
+	* `libCamera.h`: Header associé à `libCamera.c`.
 	
 
 
@@ -77,7 +77,7 @@ Les images reçues sont du type `JPEG`.
 
 **1. Lancement**
 
-Pour exécuter le client, suivant si l'on connait l'addresse IP de la caméra (notée `$IP_CAMERA`) ou non, il suffit de lancer la commande:
+Pour exécuter le client, suivant si l'on connait l’adresse IP de la caméra (notée `$IP_CAMERA`) ou non, il suffit de lancer la commande:
 
 * IP connue: 
 	
@@ -97,7 +97,7 @@ L'utilisation de l'IHM est décrite dans l'image affichée lors de l'exécution 
 
 Le seul bouton disponible est celui de détection ![](../Resources/detection.png).
 
-Il faut appuyer sur dessus et alimenter la caméra dans les 60 secondes qui suivent. Cette dernière broadcaste son IP durant 30 secondes. Si l'IP est reçue alors les boutons d'utilisation de la caméra s'activeront et les informations de la caméra seront disponibles.
+Il faut appuyer dessus et alimenter la caméra dans les 60 secondes qui suivent. Cette dernière broadcaste son IP durant 30 secondes. Si l'IP est reçue alors les boutons d'utilisation de la caméra s'activeront et les informations de la caméra seront disponibles.
 
 * IP connue: 
 

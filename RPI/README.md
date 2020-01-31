@@ -30,8 +30,8 @@ Pour que la caméra puisse fonctionner, en cas de recompilation, il ne faut pas 
 ---
 
 N'ayant pas compilé l'OS, nous avons récupéré l'image `sdcard.img` depuis le docker comme décrit dans le [sujet](../sujet.md). 
-Il faut alors alors insérer une carte SD: `/dev/mmcblk0`.
-On peut la départitionner/formater avec `gparted` si elle est déjà partitionnée. Puis afin d'éviter toute erreur on commence par flasher la carte avec des zeros:
+Il faut alors insérer une carte SD: `/dev/mmcblk0`.
+On peut la départionner/formater avec `gparted` si elle est déjà partitionnée. Puis afin d'éviter toute erreur on commence par flasher la carte avec des zeros:
 
 	$ sudp dd if=/dev/zero of=/dev/mmcblk0 status=progress
 
@@ -44,7 +44,7 @@ Une fois terminé (ou bien entamé) on peut flasher la carte avec l'image:
 <a name=install>III. Installation du Server</a>
 ---
 
-Les étapes d'installation du server sont effectuées de façon automatique. Cela consite à copier le binaire `server` cross-compilé ainsi que les scripts du lancement automatique du binaire, sur la carte SD précédemment flashée. 
+Les étapes d'installation du server sont effectuées de façon automatique. Cela consiste à copier le binaire `server` cross-compilé ainsi que les scripts du lancement automatique du binaire, sur la carte SD précédemment flashée. 
 Pour ce faire le script `serverInit/S88camera` est placé dans le `/etc/init.d/` et est donc configuré pour être exécuté lors du démarrage. Il va alors lancer un daemon qui exécutera le script `serverInit/runCamera.sh` placé dans `home/user/` au côté du binaire `server`. Ce script shell charge le module kernel `v4l2` et exécute le binaire `server`.
 
 Voici donc les étapes à effectuer afin d'installer le server sur la carte SD:
@@ -53,7 +53,7 @@ Voici donc les étapes à effectuer afin d'installer le server sur la carte SD:
 
 **2. Exécution de l'installation automatique**
 
-Vous devez vous placer dans le répertoire cloné `rpi_camera_ip` et remplacer la variable `$PATH_TO_CARD` par le chemin d'accès à la partition du RFS de la carte précedemment flashée puis tapez les commandes:
+Vous devez vous placer dans le répertoire cloné `rpi_camera_ip` et remplacer la variable `$PATH_TO_CARD` par le chemin d'accès à la partition du RFS de la carte précédemment flashée puis tapez les commandes:
 
 	$ cd RPI/
 	$ sudo sh installation.sh $PATH_TO_CARD
@@ -86,7 +86,7 @@ Le server se mettra en route automatiquement et broadcastera son adresse IP sur 
 
 	* S'allume quand le server est bien lancé. 
 	
-	* Clignote à 5Hz si il y a un problème de connection avec la caméra. 	_Par exemple lorsque la caméra n'est pas branchée_
+	* Clignote à 5Hz si il y a un problème de connexion avec la caméra. 	_Par exemple lorsque la caméra n'est pas branchée_
 
 	* Clignote à 1Hz quand elle broadcaste son IP (30 secondes au démarrage)
 	
